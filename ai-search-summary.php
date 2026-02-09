@@ -11,7 +11,7 @@ declare(strict_types=1);
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Requires at least: 6.9
  * Requires PHP: 8.4
- * Text Domain: ai-search-summary
+ * Text Domain: aiss-ai-search-summary
  * Domain Path: /languages
  */
 
