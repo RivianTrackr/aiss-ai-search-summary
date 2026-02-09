@@ -5,6 +5,17 @@ All notable changes to AI Search Summary will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2026-02-09
+
+### Added
+
+- **Post Type Filtering** - Choose which post types (posts, pages, custom types) are included in AI search results. When none are selected, all public post types are included (previous default behavior).
+- **Max Sources Displayed** - Configure how many source articles appear beneath the AI summary (1–20, default 5). Previously hardcoded to 5.
+- **Content Length Per Post** - Control how many characters of post content are sent to the AI per article (100–2,000, default 400). Allows tuning the balance between summary quality and API token cost.
+- **Preserve Data on Uninstall** - Option in Advanced settings to keep all plugin data (settings, analytics logs, feedback) when the plugin is deleted, so data is retained if you reinstall later.
+
+---
+
 ## [1.0.0] - 2026-02-08
 
 ### Added
