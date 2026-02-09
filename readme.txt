@@ -4,7 +4,7 @@ Tags: search, ai, openai, summary, chatgpt
 Requires at least: 6.9
 Tested up to: 6.9
 Requires PHP: 8.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -164,6 +164,12 @@ The plugin is designed with privacy in mind:
 
 == Changelog ==
 
+= 1.0.1 =
+* Added post type filtering - choose which post types are included in AI search results
+* Added configurable max sources displayed beneath summaries (1-20)
+* Added configurable content length per post sent to the AI (100-2000 characters)
+* Added option to preserve plugin data on uninstall for easy reinstallation
+
 = 1.0.0 =
 * Initial release
 * AI-powered search summaries using OpenAI GPT models
@@ -180,6 +186,9 @@ The plugin is designed with privacy in mind:
 * Security headers and prepared statements
 
 == Upgrade Notice ==
+
+= 1.0.1 =
+New settings: post type filtering, configurable max sources and content length per post, and an option to preserve data on uninstall.
 
 = 1.0.0 =
 Initial release of AI Search Summary. Requires WordPress 6.9+, PHP 8.4+, and an OpenAI API key.

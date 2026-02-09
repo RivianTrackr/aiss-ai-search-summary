@@ -1,6 +1,6 @@
 # AI Search Summary
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/RivianTrackr/AI-Search-Summary)
+[![Version](https://img.shields.io/badge/version-1.0.1-blue.svg)](https://github.com/RivianTrackr/AI-Search-Summary)
 [![WordPress](https://img.shields.io/badge/WordPress-6.9%2B-blue.svg)](https://wordpress.org/)
 [![PHP](https://img.shields.io/badge/PHP-8.4%2B-purple.svg)](https://php.net/)
 [![License](https://img.shields.io/badge/license-GPL--2.0%2B-green.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
@@ -104,11 +104,11 @@ Navigate to **WP Admin → AI Search → Settings** to configure:
 | Section | Options |
 |---------|---------|
 | **Getting Started** | Enable/Disable, API Key, API Key Validation |
-| **Site Configuration** | Site Name, Site Description, Badge/Sources/Feedback visibility |
-| **AI Model & Performance** | Model selection, Max Posts (1-200+), Rate limits, Timeout (10-300s) |
-| **Caching** | Cache TTL, Manual cache clear |
+| **Site Configuration** | Site Name, Site Description, Badge/Sources/Feedback visibility, Max Sources Displayed |
+| **AI Configuration** | Model selection, Context Size, Content Length Per Post, Post Types, Max Response Tokens |
+| **Performance** | Cache TTL, Manual cache clear, Request Timeout, Max Calls Per Minute |
 | **Appearance** | Background, Text, Accent, Border colors, Custom CSS |
-| **Advanced** | Allow reasoning models (o1, o3) |
+| **Advanced** | Allow reasoning models (o1, o3), Spam Blocklist, Preserve Data on Uninstall |
 | **Log Management** | Auto-purge toggle, Retention days (7-365) |
 
 ## REST API Endpoints
