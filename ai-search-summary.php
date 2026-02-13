@@ -2086,23 +2086,23 @@ class AI_Search_Summary {
                                 <?php
                                 $key_valid = isset( $options['api_key_valid'] ) ? $options['api_key_valid'] : null;
                                 if ( $this->is_api_key_from_constant() || ( ! empty( $options['api_key'] ) && $key_valid === true ) ) : ?>
-                                    <span style="color: #10b981; font-size: 13px; font-weight: 500; margin-left: 8px;">&#10003; Valid</span>
+                                    <span class="aiss-key-status aiss-key-status-valid">&#10003; Valid</span>
                                 <?php elseif ( ! empty( $options['api_key'] ) && $key_valid === false ) : ?>
-                                    <span style="color: #ef4444; font-size: 13px; font-weight: 500; margin-left: 8px;">&#10007; Invalid</span>
+                                    <span class="aiss-key-status aiss-key-status-invalid">&#10007; Invalid</span>
                                 <?php endif; ?>
                             </div>
                             <?php if ( $this->is_api_key_from_constant() ) : ?>
-                                <div class="aiss-field-description" style="background: #d1fae5; border: 1px solid #10b981; padding: 12px; border-radius: 6px; margin-bottom: 12px;">
-                                    <strong style="color: #065f46;">&#x1F512; Secure Mode:</strong>
+                                <div class="aiss-field-description aiss-secure-notice">
+                                    <strong>&#x1F512; Secure Mode:</strong>
                                     API key is defined via <code>AISS_API_KEY</code> constant in wp-config.php.
-                                    <br><span style="color: #047857;">This is more secure than storing in the database.</span>
+                                    <br><span>This is more secure than storing in the database.</span>
                                 </div>
                                 <div class="aiss-field-input">
                                     <input type="password"
                                            id="aiss-api-key"
                                            value="<?php echo esc_attr( str_repeat( '•', 20 ) ); ?>"
                                            disabled
-                                           style="background: #f3f4f6; cursor: not-allowed;" />
+                                           class="aiss-input-disabled" />
                                     <input type="hidden"
                                            name="<?php echo esc_attr( $this->option_name ); ?>[api_key]"
                                            value="" />
@@ -2110,7 +2110,7 @@ class AI_Search_Summary {
                             <?php else : ?>
                                 <div class="aiss-field-description">
                                     Get your API key from <a href="https://platform.openai.com/api-keys" target="_blank">OpenAI Platform</a>.
-                                    <br><em style="color: #6b7280; font-size: 12px;">Tip: For better security, define <code>AISS_API_KEY</code> in wp-config.php instead.</em>
+                                    <br><em>Tip: For better security, define <code>AISS_API_KEY</code> in wp-config.php instead.</em>
                                 </div>
                                 <div class="aiss-field-input">
                                     <input type="password"
@@ -2128,7 +2128,7 @@ class AI_Search_Summary {
                                     Test Connection
                                 </button>
                             </div>
-                            <div id="aiss-test-result" style="margin-top: 12px;"></div>
+                            <div id="aiss-test-result"></div>
                         </div>
                     </div>
                 </div>
@@ -2232,7 +2232,7 @@ class AI_Search_Summary {
                                        value="<?php echo esc_attr( isset( $options['max_sources_display'] ) ? $options['max_sources_display'] : 5 ); ?>"
                                        min="1"
                                        max="20" />
-                                <span style="margin-left: 8px; color: #86868b; font-size: 14px;">sources</span>
+                                <span class="aiss-input-suffix">sources</span>
                             </div>
                         </div>
 
@@ -2296,10 +2296,10 @@ class AI_Search_Summary {
                                         data-nonce="<?php echo esc_attr( wp_create_nonce( 'aiss_refresh_models' ) ); ?>">
                                     Refresh Models
                                 </button>
-                                <span id="aiss-refresh-models-result" style="margin-left: 12px;"></span>
+                                <span id="aiss-refresh-models-result" class="aiss-ajax-result"></span>
                             </div>
                             <?php if ( is_array( $cache ) && ! empty( $cache['updated_at'] ) ) : ?>
-                                <div style="margin-top: 8px; font-size: 13px; color: #86868b;">
+                                <div class="aiss-meta-text">
                                     Last updated: <?php echo esc_html( date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), intval( $cache['updated_at'] ) ) ); ?>
                                 </div>
                             <?php endif; ?>
@@ -2337,7 +2337,7 @@ class AI_Search_Summary {
                                        min="100"
                                        max="2000"
                                        step="50" />
-                                <span style="margin-left: 8px; color: #86868b; font-size: 14px;">characters</span>
+                                <span class="aiss-input-suffix">characters</span>
                             </div>
                         </div>
 
@@ -2355,13 +2355,13 @@ class AI_Search_Summary {
                                 $selected_types    = isset( $options['post_types'] ) && is_array( $options['post_types'] ) ? $options['post_types'] : array();
                                 foreach ( $public_post_types as $pt ) :
                                 ?>
-                                    <label style="display: block; margin-bottom: 6px; cursor: pointer;">
+                                    <label class="aiss-checkbox-item">
                                         <input type="checkbox"
                                                name="<?php echo esc_attr( $this->option_name ); ?>[post_types][]"
                                                value="<?php echo esc_attr( $pt->name ); ?>"
                                                <?php checked( in_array( $pt->name, $selected_types, true ) ); ?> />
                                         <?php echo esc_html( $pt->labels->singular_name ); ?>
-                                        <span style="color: #86868b; font-size: 13px;">(<?php echo esc_html( $pt->name ); ?>)</span>
+                                        <span class="aiss-checkbox-item-meta">(<?php echo esc_html( $pt->name ); ?>)</span>
                                     </label>
                                 <?php endforeach; ?>
                             </div>
@@ -2382,7 +2382,7 @@ class AI_Search_Summary {
                                        min="500"
                                        max="16000"
                                        step="100" />
-                                <span style="margin-left: 8px; color: #86868b; font-size: 14px;">tokens</span>
+                                <span class="aiss-input-suffix">tokens</span>
                             </div>
                         </div>
                     </div>
@@ -2410,7 +2410,7 @@ class AI_Search_Summary {
                                        min="60"
                                        max="86400"
                                        step="60" />
-                                <span style="margin-left: 8px; color: #86868b; font-size: 14px;">seconds</span>
+                                <span class="aiss-input-suffix">seconds</span>
                             </div>
                             <div class="aiss-field-actions">
                                 <button type="button" id="aiss-clear-cache-btn"
@@ -2418,7 +2418,7 @@ class AI_Search_Summary {
                                         data-nonce="<?php echo esc_attr( wp_create_nonce( 'aiss_clear_cache' ) ); ?>">
                                     Clear Cache Now
                                 </button>
-                                <span id="aiss-clear-cache-result" style="margin-left: 12px;"></span>
+                                <span id="aiss-clear-cache-result" class="aiss-ajax-result"></span>
                             </div>
                         </div>
 
@@ -2436,7 +2436,7 @@ class AI_Search_Summary {
                                        value="<?php echo esc_attr( isset( $options['max_calls_per_minute'] ) ? $options['max_calls_per_minute'] : 30 ); ?>"
                                        min="0"
                                        step="1" />
-                                <span style="margin-left: 8px; color: #86868b; font-size: 14px;">calls/minute</span>
+                                <span class="aiss-input-suffix">calls/minute</span>
                             </div>
                         </div>
 
@@ -2455,7 +2455,7 @@ class AI_Search_Summary {
                                        min="10"
                                        max="300"
                                        step="5" />
-                                <span style="margin-left: 8px; color: #86868b; font-size: 14px;">seconds</span>
+                                <span class="aiss-input-suffix">seconds</span>
                             </div>
                         </div>
                     </div>
@@ -2543,13 +2543,13 @@ class AI_Search_Summary {
                         <p>Settings for advanced users</p>
                     </div>
                     <div class="aiss-section-content">
-                        <div id="aiss-advanced-toggle-wrap" style="padding: 20px 24px;">
-                            <button type="button" id="aiss-advanced-toggle" class="aiss-button aiss-button-secondary" style="font-size: 13px; padding: 8px 16px;">
+                        <div id="aiss-advanced-toggle-wrap" class="aiss-field">
+                            <button type="button" id="aiss-advanced-toggle" class="aiss-button aiss-button-secondary">
                                 Show Advanced Settings
                             </button>
                         </div>
                         <div id="aiss-advanced-settings" style="display: none;">
-                            <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 6px; padding: 12px 16px; margin: 0 24px; font-size: 13px; color: #92400e;">
+                            <div class="aiss-advanced-warning">
                                 <strong>Warning:</strong> These settings are intended for advanced users. Incorrect changes may affect plugin behavior, API costs, or data retention. Proceed with caution.
                             </div>
                         <div class="aiss-field">
@@ -2586,7 +2586,7 @@ class AI_Search_Summary {
                                     id="aiss-spam-blocklist"
                                     name="<?php echo esc_attr( $this->option_name ); ?>[spam_blocklist]"
                                     rows="6"
-                                    style="width: 100%; max-width: 500px; font-family: monospace; font-size: 13px;"
+                                    class="aiss-blocklist-textarea"
                                     placeholder="example-spam-term&#10;another blocked phrase&#10;unwanted keyword"><?php echo esc_textarea( isset( $options['spam_blocklist'] ) ? $options['spam_blocklist'] : '' ); ?></textarea>
                             </div>
                         </div>
@@ -2633,15 +2633,15 @@ class AI_Search_Summary {
                                     <?php echo ! empty( $options['anonymize_queries'] ) ? 'Enabled' : 'Disabled'; ?>
                                 </span>
                             </div>
-                            <div style="margin-top: 12px;">
-                                <button type="button" id="aiss-gdpr-purge-btn" class="aiss-button aiss-button-secondary" style="font-size: 13px; padding: 6px 12px;">
+                            <div class="aiss-field-action-row">
+                                <button type="button" id="aiss-gdpr-purge-btn" class="aiss-button aiss-button-secondary aiss-button-sm">
                                     Anonymize Existing Queries
                                 </button>
-                                <span id="aiss-gdpr-purge-result" style="font-size: 13px; margin-left: 8px;"></span>
-                                <p style="font-size: 12px; color: #6e6e73; margin-top: 4px;">
-                                    Retroactively replace all stored query text with SHA-256 hashes. This cannot be undone.
-                                </p>
+                                <span id="aiss-gdpr-purge-result" class="aiss-ajax-result"></span>
                             </div>
+                            <p class="aiss-meta-text-sm">
+                                Retroactively replace all stored query text with SHA-256 hashes. This cannot be undone.
+                            </p>
                         </div>
                         </div><!-- /#aiss-advanced-settings -->
                     </div>
@@ -2730,16 +2730,16 @@ class AI_Search_Summary {
                         success: function(response) {
                             btn.prop('disabled', false).text('Refresh Models');
                             if (response.success) {
-                                resultSpan.html('<span style="color: #fba919;">✓ ' + response.data.message + '</span>');
+                                resultSpan.html('<span class="aiss-result-success">✓ ' + response.data.message + '</span>');
                                 // Reload page to show updated model list
                                 setTimeout(function() { location.reload(); }, 1000);
                             } else {
-                                resultSpan.html('<span style="color: #ef4444;">✗ ' + response.data.message + '</span>');
+                                resultSpan.html('<span class="aiss-result-error">✗ ' + response.data.message + '</span>');
                             }
                         },
                         error: function() {
                             btn.prop('disabled', false).text('Refresh Models');
-                            resultSpan.html('<span style="color: #ef4444;">✗ Request failed. Please try again.</span>');
+                            resultSpan.html('<span class="aiss-result-error">✗ Request failed. Please try again.</span>');
                         }
                     });
                 });
@@ -2763,14 +2763,14 @@ class AI_Search_Summary {
                         success: function(response) {
                             btn.prop('disabled', false).text('Anonymize Existing Queries');
                             if (response.success) {
-                                resultSpan.html('<span style="color: #10b981;">' + response.data.message + '</span>');
+                                resultSpan.html('<span class="aiss-result-success">' + response.data.message + '</span>');
                             } else {
-                                resultSpan.html('<span style="color: #ef4444;">' + response.data.message + '</span>');
+                                resultSpan.html('<span class="aiss-result-error">' + response.data.message + '</span>');
                             }
                         },
                         error: function() {
                             btn.prop('disabled', false).text('Anonymize Existing Queries');
-                            resultSpan.html('<span style="color: #ef4444;">Request failed. Please try again.</span>');
+                            resultSpan.html('<span class="aiss-result-error">Request failed. Please try again.</span>');
                         }
                     });
                 });
@@ -2794,14 +2794,14 @@ class AI_Search_Summary {
                         success: function(response) {
                             btn.prop('disabled', false).text('Clear Cache Now');
                             if (response.success) {
-                                resultSpan.html('<span style="color: #fba919;">✓ ' + response.data.message + '</span>');
+                                resultSpan.html('<span class="aiss-result-success">✓ ' + response.data.message + '</span>');
                             } else {
-                                resultSpan.html('<span style="color: #ef4444;">✗ ' + response.data.message + '</span>');
+                                resultSpan.html('<span class="aiss-result-error">✗ ' + response.data.message + '</span>');
                             }
                         },
                         error: function() {
                             btn.prop('disabled', false).text('Clear Cache Now');
-                            resultSpan.html('<span style="color: #ef4444;">✗ Request failed. Please try again.</span>');
+                            resultSpan.html('<span class="aiss-result-error">✗ Request failed. Please try again.</span>');
                         }
                     });
                 });
@@ -2891,7 +2891,7 @@ class AI_Search_Summary {
                     <div class="aiss-empty-icon">📊</div>
                     <h3>No Analytics Data Yet</h3>
                     <p>After visitors use search, analytics data will appear here.</p>
-                    <form method="post" style="display: inline;">
+                    <form method="post">
                         <?php wp_nonce_field( 'aiss_build_logs' ); ?>
                         <button type="submit" name="aiss_build_logs" value="1"
                                 class="aiss-button aiss-button-primary">
@@ -2958,29 +2958,29 @@ class AI_Search_Summary {
             }
         }
         ?>
-        <div class="aiss-pagination" style="margin: 20px; padding-top: 16px; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;">
-            <div class="aiss-pagination-info" style="font-size: 13px; color: #6e6e73;">
+        <div class="aiss-pagination">
+            <div class="aiss-pagination-info">
                 Page <?php echo esc_html( $current_page ); ?> of <?php echo esc_html( $total_pages ); ?>
             </div>
-            <div class="aiss-pagination-buttons" style="display: flex; gap: 8px;">
+            <div class="aiss-pagination-buttons">
                 <?php if ( $current_page > 1 ) : ?>
                     <a href="<?php echo esc_url( add_query_arg( $param_name, $current_page - 1, $base_url ) ); ?>"
-                       style="display: inline-block; padding: 8px 16px; font-size: 13px; font-weight: 500; color: #374151; background: #fff; border: 1px solid #d1d5db; border-radius: 6px; text-decoration: none; transition: all 0.15s ease;">
+                       class="aiss-pagination-link aiss-pagination-link-default">
                         &laquo; Previous
                     </a>
                 <?php else : ?>
-                    <span style="display: inline-block; padding: 8px 16px; font-size: 13px; font-weight: 500; color: #9ca3af; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; cursor: not-allowed;">
+                    <span class="aiss-pagination-link-disabled">
                         &laquo; Previous
                     </span>
                 <?php endif; ?>
 
                 <?php if ( $current_page < $total_pages ) : ?>
                     <a href="<?php echo esc_url( add_query_arg( $param_name, $current_page + 1, $base_url ) ); ?>"
-                       style="display: inline-block; padding: 8px 16px; font-size: 13px; font-weight: 500; color: #fff; background: #0071e3; border: 1px solid #0071e3; border-radius: 6px; text-decoration: none; transition: all 0.15s ease;">
+                       class="aiss-pagination-link aiss-pagination-link-primary">
                         Next &raquo;
                     </a>
                 <?php else : ?>
-                    <span style="display: inline-block; padding: 8px 16px; font-size: 13px; font-weight: 500; color: #9ca3af; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; cursor: not-allowed;">
+                    <span class="aiss-pagination-link-disabled">
                         Next &raquo;
                     </span>
                 <?php endif; ?>
@@ -3239,15 +3239,15 @@ class AI_Search_Summary {
         </div>
 
         <!-- Badge Legend -->
-        <div style="margin-bottom: 16px; padding: 12px 16px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 12px; color: #6e6e73; display: flex; flex-wrap: wrap; gap: 16px; align-items: center;">
-            <span style="font-weight: 600; color: #374151;">Badge Thresholds:</span>
-            <span><span class="aiss-badge aiss-badge-success" style="font-size: 11px; padding: 2px 6px;">AI Success</span> &ge;<?php echo esc_html( AISS_BADGE_SUCCESS_HIGH ); ?>%</span>
-            <span><span class="aiss-badge aiss-badge-warning" style="font-size: 11px; padding: 2px 6px;">AI Success</span> &ge;<?php echo esc_html( AISS_BADGE_SUCCESS_MED ); ?>%</span>
-            <span><span class="aiss-badge aiss-badge-success" style="font-size: 11px; padding: 2px 6px;">Cache</span> &ge;<?php echo esc_html( AISS_BADGE_CACHE_HIGH ); ?>%</span>
-            <span><span class="aiss-badge aiss-badge-warning" style="font-size: 11px; padding: 2px 6px;">Cache</span> &ge;<?php echo esc_html( AISS_BADGE_CACHE_MED ); ?>%</span>
-            <span><span class="aiss-badge aiss-badge-success" style="font-size: 11px; padding: 2px 6px;">Helpful</span> &ge;<?php echo esc_html( AISS_BADGE_HELPFUL_HIGH ); ?>%</span>
-            <span><span class="aiss-badge aiss-badge-warning" style="font-size: 11px; padding: 2px 6px;">Helpful</span> &ge;<?php echo esc_html( AISS_BADGE_HELPFUL_MED ); ?>%</span>
-            <span><span class="aiss-badge aiss-badge-error" style="font-size: 11px; padding: 2px 6px;">Any</span> below thresholds</span>
+        <div class="aiss-badge-legend">
+            <span class="aiss-badge-legend-title">Badge Thresholds:</span>
+            <span><span class="aiss-badge aiss-badge-success aiss-badge-sm">AI Success</span> &ge;<?php echo esc_html( AISS_BADGE_SUCCESS_HIGH ); ?>%</span>
+            <span><span class="aiss-badge aiss-badge-warning aiss-badge-sm">AI Success</span> &ge;<?php echo esc_html( AISS_BADGE_SUCCESS_MED ); ?>%</span>
+            <span><span class="aiss-badge aiss-badge-success aiss-badge-sm">Cache</span> &ge;<?php echo esc_html( AISS_BADGE_CACHE_HIGH ); ?>%</span>
+            <span><span class="aiss-badge aiss-badge-warning aiss-badge-sm">Cache</span> &ge;<?php echo esc_html( AISS_BADGE_CACHE_MED ); ?>%</span>
+            <span><span class="aiss-badge aiss-badge-success aiss-badge-sm">Helpful</span> &ge;<?php echo esc_html( AISS_BADGE_HELPFUL_HIGH ); ?>%</span>
+            <span><span class="aiss-badge aiss-badge-warning aiss-badge-sm">Helpful</span> &ge;<?php echo esc_html( AISS_BADGE_HELPFUL_MED ); ?>%</span>
+            <span><span class="aiss-badge aiss-badge-error aiss-badge-sm">Any</span> below thresholds</span>
         </div>
 
         <!-- Daily Stats Section -->
@@ -3363,9 +3363,9 @@ class AI_Search_Summary {
                                                 <span class="aiss-badge aiss-badge-<?php echo $helpful_rate >= AISS_BADGE_HELPFUL_HIGH ? 'success' : ( $helpful_rate >= AISS_BADGE_HELPFUL_MED ? 'warning' : 'error' ); ?>">
                                                     <?php echo esc_html( $helpful_rate ); ?>%
                                                 </span>
-                                                <span style="font-size:0.75rem; opacity:0.6;">(<?php echo esc_html( $vote_count ); ?>)</span>
+                                                <span class="aiss-vote-count">(<?php echo esc_html( $vote_count ); ?>)</span>
                                             <?php else : ?>
-                                                <span style="opacity:0.4;">&mdash;</span>
+                                                <span class="aiss-no-data">&mdash;</span>
                                             <?php endif; ?>
                                         </td>
                                     </tr>
@@ -3471,18 +3471,18 @@ class AI_Search_Summary {
             </div>
             <div class="aiss-section-content">
                 <?php if ( ! empty( $recent_events ) ) : ?>
-                    <div style="margin: 16px 20px 8px; display: flex; align-items: center; gap: 12px;">
+                    <div class="aiss-bulk-actions">
                         <button type="button" id="aiss-bulk-delete-btn"
-                                class="aiss-button aiss-button-secondary" style="font-size: 13px; padding: 6px 12px; display: none;">
+                                class="aiss-button aiss-button-secondary aiss-button-sm" style="display: none;">
                             Delete Selected
                         </button>
-                        <span id="aiss-bulk-delete-result" style="font-size: 13px;"></span>
+                        <span id="aiss-bulk-delete-result" class="aiss-ajax-result"></span>
                     </div>
                     <div class="aiss-table-wrapper">
                         <table class="aiss-table aiss-table-compact" id="aiss-events-table">
                             <thead>
                                 <tr>
-                                    <th style="width: 32px; text-align: center;"><input type="checkbox" id="aiss-select-all" title="Select all" /></th>
+                                    <th class="aiss-col-check"><input type="checkbox" id="aiss-select-all" title="Select all" /></th>
                                     <th>Query</th>
                                     <th>Status</th>
                                     <th>Cache</th>
@@ -3494,7 +3494,7 @@ class AI_Search_Summary {
                             <tbody>
                                 <?php foreach ( $recent_events as $event ) : ?>
                                     <tr>
-                                        <td style="text-align: center;"><input type="checkbox" class="aiss-row-check" value="<?php echo esc_attr( $event->id ); ?>" /></td>
+                                        <td class="aiss-col-check"><input type="checkbox" class="aiss-row-check" value="<?php echo esc_attr( $event->id ); ?>" /></td>
                                         <td class="aiss-query-cell" title="<?php echo esc_attr( $event->search_query ); ?>"><?php echo esc_html( $event->search_query ); ?></td>
                                         <td>
                                             <?php if ( (int) $event->ai_success === 1 ) : ?>
@@ -3543,8 +3543,8 @@ class AI_Search_Summary {
                     <?php if ( $total_pages > 1 ) : ?>
                         <?php $this->render_analytics_pagination( $current_page, $total_pages, 'events_page' ); ?>
                         <?php if ( $is_large_table ) : ?>
-                            <div style="margin: 0 20px 10px; font-size: 11px;">
-                                <span style="padding: 2px 8px; background: #fef3c7; color: #92400e; border-radius: 4px;">
+                            <div class="aiss-large-dataset-notice">
+                                <span class="aiss-large-dataset-badge">
                                     Large dataset - showing recent <?php echo esc_html( number_format( $max_pages * $events_per_page ) ); ?> events
                                 </span>
                             </div>
@@ -3572,28 +3572,27 @@ class AI_Search_Summary {
                     <div class="aiss-field-description">
                         Scan log entries for spam patterns (URLs, emails, phone numbers, known spam keywords, and your blocklist) and remove them.
                     </div>
-                    <div style="margin-top: 12px; display: flex; align-items: center; gap: 12px;">
+                    <div class="aiss-field-action-row">
                         <button type="button" id="aiss-purge-spam-btn"
                                 class="aiss-button aiss-button-secondary"
                                 data-nonce="<?php echo esc_attr( wp_create_nonce( 'aiss_purge_spam' ) ); ?>">
                             Scan &amp; Remove Spam
                         </button>
-                        <span id="aiss-purge-spam-result"></span>
+                        <span id="aiss-purge-spam-result" class="aiss-ajax-result"></span>
                     </div>
                 </div>
 
-                <div class="aiss-field" style="margin-top: 24px;">
+                <div class="aiss-field">
                     <div class="aiss-field-label">
                         <label>Purge Old Logs</label>
                     </div>
                     <div class="aiss-field-description">
                         Delete log entries older than the specified number of days to free up database space.
                     </div>
-                    <form method="post" style="display: flex; align-items: center; gap: 12px; margin-top: 12px;">
+                    <form method="post" class="aiss-inline-form">
                         <?php wp_nonce_field( 'aiss_purge_logs' ); ?>
                         <span>Delete logs older than</span>
-                        <input type="number" name="aiss_purge_days" value="30" min="1" max="365"
-                               style="width: 80px;" />
+                        <input type="number" name="aiss_purge_days" value="30" min="1" max="365" />
                         <span>days</span>
                         <button type="submit" name="aiss_purge_logs" value="1"
                                 class="aiss-button aiss-button-secondary"
@@ -3602,7 +3601,7 @@ class AI_Search_Summary {
                         </button>
                     </form>
                 </div>
-                <div class="aiss-field" style="margin-top: 24px;">
+                <div class="aiss-field">
                     <div class="aiss-field-label">
                         <label>Automatic Purging</label>
                     </div>
@@ -3615,7 +3614,7 @@ class AI_Search_Summary {
                     $auto_purge_days  = isset( $options['auto_purge_days'] ) ? absint( $options['auto_purge_days'] ) : 90;
                     $next_scheduled   = wp_next_scheduled( 'aiss_daily_log_purge' );
                     ?>
-                    <form method="post" action="options.php" style="margin-top: 12px;">
+                    <form method="post" action="options.php" class="aiss-inline-form">
                         <?php settings_fields( 'aiss_group' ); ?>
                         <?php
                         // Preserve all existing options as hidden fields
@@ -3631,45 +3630,42 @@ class AI_Search_Summary {
                             }
                         }
                         ?>
-                        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px;">
-                            <label style="display: flex; align-items: center; gap: 6px;">
+                            <label>
                                 <input type="checkbox" name="<?php echo esc_attr( $this->option_name ); ?>[auto_purge_enabled]" value="1" <?php checked( $auto_purge ); ?> />
                                 <span>Enable automatic purging</span>
                             </label>
-                            <label style="display: flex; align-items: center; gap: 6px;">
+                            <label>
                                 <span>Keep logs for</span>
-                                <input type="number" name="<?php echo esc_attr( $this->option_name ); ?>[auto_purge_days]" value="<?php echo esc_attr( $auto_purge_days ); ?>" min="7" max="365" style="width: 80px;" />
+                                <input type="number" name="<?php echo esc_attr( $this->option_name ); ?>[auto_purge_days]" value="<?php echo esc_attr( $auto_purge_days ); ?>" min="7" max="365" />
                                 <span>days</span>
                             </label>
                             <button type="submit" class="aiss-button aiss-button-secondary">Save</button>
-                        </div>
                         <?php if ( $auto_purge && $next_scheduled ) : ?>
-                            <p style="margin-top: 8px; font-size: 12px; color: #6e6e73;">
+                            <p class="aiss-scheduled-info">
                                 Next scheduled purge: <?php echo esc_html( date_i18n( 'M j, Y g:i a', $next_scheduled ) ); ?>
                             </p>
                         <?php endif; ?>
                     </form>
                 </div>
-                <div class="aiss-field" style="margin-top: 24px;">
+                <div class="aiss-field">
                     <div class="aiss-field-label">
                         <label>Export Data</label>
                     </div>
                     <div class="aiss-field-description">
                         Download analytics data as CSV for external analysis. Choose date range and data type.
                     </div>
-                    <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-top: 12px;">
+                    <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="aiss-inline-form">
                         <?php wp_nonce_field( 'aiss_export_csv' ); ?>
                         <input type="hidden" name="action" value="aiss_export_csv" />
-                        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px;">
-                            <label style="display: flex; align-items: center; gap: 6px;">
+                            <label>
                                 <span>From:</span>
                                 <input type="date" name="export_from" value="<?php echo esc_attr( gmdate( 'Y-m-d', strtotime( '-30 days' ) ) ); ?>" />
                             </label>
-                            <label style="display: flex; align-items: center; gap: 6px;">
+                            <label>
                                 <span>To:</span>
                                 <input type="date" name="export_to" value="<?php echo esc_attr( gmdate( 'Y-m-d' ) ); ?>" />
                             </label>
-                            <label style="display: flex; align-items: center; gap: 6px;">
+                            <label>
                                 <span>Data:</span>
                                 <select name="export_type">
                                     <option value="logs">Search Logs</option>
@@ -3680,7 +3676,6 @@ class AI_Search_Summary {
                             <button type="submit" class="aiss-button aiss-button-secondary">
                                 Export CSV
                             </button>
-                        </div>
                     </form>
                 </div>
             </div>
@@ -3711,18 +3706,18 @@ class AI_Search_Summary {
                         success: function(response) {
                             btn.prop('disabled', false).text('Scan & Remove Spam');
                             if (response.success) {
-                                var color = response.data.deleted > 0 ? '#10b981' : '#6e6e73';
-                                resultSpan.html('<span style="color: ' + color + ';">' + response.data.message + '</span>');
+                                var cls = response.data.deleted > 0 ? 'aiss-result-success' : 'aiss-result-muted';
+                                resultSpan.html('<span class="' + cls + '">' + response.data.message + '</span>');
                                 if (response.data.deleted > 0) {
                                     setTimeout(function() { location.reload(); }, 2000);
                                 }
                             } else {
-                                resultSpan.html('<span style="color: #ef4444;">' + response.data.message + '</span>');
+                                resultSpan.html('<span class="aiss-result-error">' + response.data.message + '</span>');
                             }
                         },
                         error: function() {
                             btn.prop('disabled', false).text('Scan & Remove Spam');
-                            resultSpan.html('<span style="color: #ef4444;">Request failed. Please try again.</span>');
+                            resultSpan.html('<span class="aiss-result-error">Request failed. Please try again.</span>');
                         }
                     });
                 });
@@ -3769,16 +3764,16 @@ class AI_Search_Summary {
                         success: function(response) {
                             $deleteBtn.prop('disabled', false);
                             if (response.success) {
-                                $resultSpan.html('<span style="color: #10b981;">' + response.data.message + '</span>');
+                                $resultSpan.html('<span class="aiss-result-success">' + response.data.message + '</span>');
                                 setTimeout(function() { location.reload(); }, 1500);
                             } else {
-                                $resultSpan.html('<span style="color: #ef4444;">' + response.data.message + '</span>');
+                                $resultSpan.html('<span class="aiss-result-error">' + response.data.message + '</span>');
                                 updateDeleteBtn();
                             }
                         },
                         error: function() {
                             $deleteBtn.prop('disabled', false);
-                            $resultSpan.html('<span style="color: #ef4444;">Request failed. Please try again.</span>');
+                            $resultSpan.html('<span class="aiss-result-error">Request failed. Please try again.</span>');
                             updateDeleteBtn();
                         }
                     });
