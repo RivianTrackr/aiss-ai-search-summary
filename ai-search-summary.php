@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Plugin Name: AI Search Summary
  * Description: Add an OpenAI powered AI summary to WordPress search results without delaying normal results, with analytics, cache control, and collapsible sources.
- * Version: 1.0.5
+ * Version: 1.0.5.1
  * Author: Jose Castillo
  * Author URI: https://github.com/RivianTrackr/
  * License: GPL v2 or later
@@ -14,7 +14,7 @@ declare(strict_types=1);
  * Domain Path: /languages
  */
 
-define( 'AI_SEARCH_VERSION', '1.0.5' );
+define( 'AI_SEARCH_VERSION', '1.0.5.1' );
 define( 'AISS_MODELS_CACHE_TTL', 7 * DAY_IN_SECONDS );
 define( 'AISS_MIN_CACHE_TTL', 60 );
 define( 'AISS_MAX_CACHE_TTL', 86400 );
@@ -592,9 +592,9 @@ class AI_Search_Summary {
             'request_timeout'      => 60,
             'site_name'            => get_bloginfo( 'name' ),
             'site_description'     => '',
-            'show_openai_badge'    => 1,
-            'show_sources'         => 1,
-            'show_feedback'        => 1,
+            'show_openai_badge'    => 0,
+            'show_sources'         => 0,
+            'show_feedback'        => 0,
             'color_background'     => '#121e2b',
             'color_text'           => '#e5e7eb',
             'color_accent'         => '#fba919',
@@ -791,7 +791,7 @@ class AI_Search_Summary {
 
         // Auto-clear cache when model, token limit, or display settings change
         $old_model       = isset( $old_options['model'] ) ? $old_options['model'] : '';
-        $old_show_sources = isset( $old_options['show_sources'] ) ? $old_options['show_sources'] : 1;
+        $old_show_sources = isset( $old_options['show_sources'] ) ? $old_options['show_sources'] : 0;
         $old_max_tokens  = isset( $old_options['max_tokens'] ) ? (int) $old_options['max_tokens'] : AISS_MAX_TOKENS;
 
         $cache_invalidating_change = false;
@@ -1346,10 +1346,12 @@ class AI_Search_Summary {
         $table_name   = self::get_logs_table_name();
         $placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
 
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $deleted = $wpdb->query(
             $wpdb->prepare(
-                "DELETE FROM {$table_name} WHERE id IN ($placeholders)",
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- $placeholders is a safe list of %d tokens
+                "DELETE FROM %i WHERE id IN ($placeholders)",
+                $table_name,
                 ...$ids
             )
         );
@@ -2187,7 +2189,7 @@ class AI_Search_Summary {
                                     <input type="checkbox"
                                            name="<?php echo esc_attr( $this->option_name ); ?>[show_openai_badge]"
                                            value="1"
-                                           <?php checked( isset( $options['show_openai_badge'] ) ? $options['show_openai_badge'] : 1, 1 ); ?> />
+                                           <?php checked( isset( $options['show_openai_badge'] ) ? $options['show_openai_badge'] : 0, 1 ); ?> />
                                     <span class="aiss-toggle-slider"></span>
                                 </label>
                                 <span class="aiss-toggle-label">
@@ -2209,7 +2211,7 @@ class AI_Search_Summary {
                                     <input type="checkbox"
                                            name="<?php echo esc_attr( $this->option_name ); ?>[show_sources]"
                                            value="1"
-                                           <?php checked( isset( $options['show_sources'] ) ? $options['show_sources'] : 1, 1 ); ?> />
+                                           <?php checked( isset( $options['show_sources'] ) ? $options['show_sources'] : 0, 1 ); ?> />
                                     <span class="aiss-toggle-slider"></span>
                                 </label>
                                 <span class="aiss-toggle-label">
@@ -2249,7 +2251,7 @@ class AI_Search_Summary {
                                     <input type="checkbox"
                                            name="<?php echo esc_attr( $this->option_name ); ?>[show_feedback]"
                                            value="1"
-                                           <?php checked( isset( $options['show_feedback'] ) ? $options['show_feedback'] : 1, 1 ); ?> />
+                                           <?php checked( isset( $options['show_feedback'] ) ? $options['show_feedback'] : 0, 1 ); ?> />
                                     <span class="aiss-toggle-slider"></span>
                                 </label>
                                 <span class="aiss-toggle-label">
@@ -2951,12 +2953,13 @@ class AI_Search_Summary {
 
         // Preserve other pagination params when navigating
         $preserve_params = array( 'queries_page', 'errors_page', 'events_page' );
+        // phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only pagination params on admin page
         foreach ( $preserve_params as $param ) {
             if ( $param !== $param_name && isset( $_GET[ $param ] ) ) {
-                // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only pagination params
                 $base_url = add_query_arg( $param, absint( wp_unslash( $_GET[ $param ] ) ), $base_url );
             }
         }
+        // phpcs:enable WordPress.Security.NonceVerification.Recommended
         ?>
         <div class="aiss-pagination" style="margin: 20px; padding-top: 16px; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;">
             <div class="aiss-pagination-info" style="font-size: 13px; color: #6e6e73;">
@@ -4134,8 +4137,8 @@ class AI_Search_Summary {
 
         $search_query = get_search_query();
         $site_name = ! empty( $options['site_name'] ) ? $options['site_name'] : get_bloginfo( 'name' );
-        $show_badge = isset( $options['show_openai_badge'] ) ? $options['show_openai_badge'] : 1;
-        $show_feedback = isset( $options['show_feedback'] ) ? $options['show_feedback'] : 1;
+        $show_badge = isset( $options['show_openai_badge'] ) ? $options['show_openai_badge'] : 0;
+        $show_feedback = isset( $options['show_feedback'] ) ? $options['show_feedback'] : 0;
         ?>
         <div class="aiss-summary" style="margin-bottom: 1.5rem;">
             <div class="aiss-summary-inner" style="padding: 1.25rem 1.25rem; border-radius: 10px; border-width: 1px; border-style: solid; display:flex; flex-direction:column; gap:0.6rem;">
@@ -5157,7 +5160,7 @@ class AI_Search_Summary {
         $answer_html = wp_kses( $answer_html, $allowed_tags );
 
         // Add sources if enabled in settings
-        $show_sources = isset( $options['show_sources'] ) ? $options['show_sources'] : 1;
+        $show_sources = isset( $options['show_sources'] ) ? $options['show_sources'] : 0;
         if ( $show_sources && ! empty( $sources ) ) {
             $answer_html .= $this->render_sources_html( $sources );
         }
