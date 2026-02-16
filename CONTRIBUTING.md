@@ -54,12 +54,12 @@ This project adheres to a code of conduct. By participating, you are expected to
 
 1. Clone your fork:
    ```bash
-   git clone https://github.com/YOUR-USERNAME/AI-Search-Summary.git
+   git clone https://github.com/YOUR-USERNAME/searchlens-ai.git
    ```
 
 2. Copy the plugin to your WordPress plugins directory:
    ```bash
-   cp -r AI-Search-Summary /path/to/wordpress/wp-content/plugins/
+   cp -r searchlens-ai /path/to/wordpress/wp-content/plugins/
    ```
 
 3. Activate the plugin in WordPress admin
@@ -231,7 +231,7 @@ Describe how you tested these changes
 
 ### Before Reporting
 
-1. Check if the bug has already been reported in [Issues](https://github.com/RivianTrackr/AI-Search-Summary/issues)
+1. Check if the bug has already been reported in [Issues](https://github.com/RivianTrackr/searchlens-ai/issues)
 2. Test with the latest version of the plugin
 3. Test with default WordPress theme (Twenty Twenty-Four)
 4. Disable other plugins to check for conflicts
@@ -332,7 +332,7 @@ Check logs in `wp-content/debug.log`
 ## Questions?
 
 If you have questions about contributing, please:
-- Open a [Discussion](https://github.com/RivianTrackr/AI-Search-Summary/discussions)
+- Open a [Discussion](https://github.com/RivianTrackr/searchlens-ai/discussions)
 - Open an issue on GitHub
 
 ## License

@@ -1,6 +1,6 @@
 # SearchLens AI
 
-[![Version](https://img.shields.io/badge/version-1.0.6-blue.svg)](https://github.com/RivianTrackr/aiss-ai-search-summary)
+[![Version](https://img.shields.io/badge/version-1.0.6-blue.svg)](https://github.com/RivianTrackr/searchlens-ai)
 [![WordPress](https://img.shields.io/badge/WordPress-6.9%2B-blue.svg)](https://wordpress.org/)
 [![PHP](https://img.shields.io/badge/PHP-8.4%2B-purple.svg)](https://php.net/)
 [![License](https://img.shields.io/badge/license-GPL--2.0%2B-green.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
@@ -170,8 +170,8 @@ The plugin creates two custom tables:
 
 ## Support
 
-- [Report Issues](https://github.com/RivianTrackr/aiss-ai-search-summary/issues)
-- [Discussions](https://github.com/RivianTrackr/aiss-ai-search-summary/discussions)
+- [Report Issues](https://github.com/RivianTrackr/searchlens-ai/issues)
+- [Discussions](https://github.com/RivianTrackr/searchlens-ai/discussions)
 
 ## License
 

@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: SearchLens AI 1.0.6\n"
-"Report-Msgid-Bugs-To: https://github.com/RivianTrackr/AI-Search-Summary/issues\n"
+"Report-Msgid-Bugs-To: https://github.com/RivianTrackr/searchlens-ai/issues\n"
 "POT-Creation-Date: 2025-01-01 00:00:00+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
