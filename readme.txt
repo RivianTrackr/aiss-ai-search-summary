@@ -164,6 +164,12 @@ The plugin is designed with privacy in mind:
 
 == Changelog ==
 
+= 1.0.6 =
+* Changed: Plugin renamed from "AI Search Summary" to "SearchLens AI" (display name, slug, text domain, main PHP file)
+* Changed: All internal prefixes replaced from `aiss` to `searchlens` (constants, options, transients, database tables, REST namespace, AJAX actions, shortcode, cron hook, CSS classes, JS globals, asset filenames)
+* Changed: Moved inline `<script>` and `<style>` tags to properly enqueued JS/CSS files per plugin directory guidelines
+* Added: Automatic data migration on upgrade — renames database tables and migrates options/transients to new prefix
+
 = 1.0.5.4 =
 * Fixed: Block search queries containing server/CGI variable names (QUERY_STRING, DOCUMENT_ROOT, etc.) used by vulnerability scanners
 
@@ -244,6 +250,9 @@ The plugin is designed with privacy in mind:
 * Security headers and prepared statements
 
 == Upgrade Notice ==
+
+= 1.0.6 =
+WordPress plugin directory compliance: plugin renamed to SearchLens AI, all internal prefixes changed from `aiss` to `searchlens`, inline scripts/styles moved to enqueued files. Database tables and options are migrated automatically on activation.
 
 = 1.0.5.4 =
 Blocks vulnerability scanner probe queries (QUERY_STRING, DOCUMENT_ROOT, etc.) from triggering AI summaries and wasting API calls.
