@@ -9,12 +9,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **Plugin renamed from "AI Search Summary" to "SearchLens AI"** — Display name, slug, text domain, and main PHP file updated to comply with WordPress plugin directory naming guidelines. All internal identifiers (`AISS_*` constants, `aiss_*` options, database tables, REST API namespace, CSS classes) remain unchanged for backward compatibility.
+- **Plugin renamed from "AI Search Summary" to "SearchLens AI"** — Display name, slug, text domain, and main PHP file updated to comply with WordPress plugin directory naming guidelines.
 - Main plugin file renamed from `ai-search-summary.php` to `searchlens-ai.php`
 - Text domain changed from `aiss-ai-search-summary` to `searchlens-ai`
 - Admin menu label changed from "AI Search" to "SearchLens AI"
 - Dashboard widget title updated to "SearchLens AI"
 - Translation template renamed to `searchlens-ai.pot`
+- **All internal prefixes replaced: `aiss` → `searchlens`** — WordPress plugin review flagged "ai" as a common-word prefix. Every internal identifier has been updated to use the unique `searchlens` prefix:
+  - Constants: `AISS_*` → `SEARCHLENS_*`
+  - Options: `aiss_options` → `searchlens_options`
+  - Transients: `aiss_*` → `searchlens_*`
+  - Database tables: `rv_aiss_logs` / `rv_aiss_feedback` → `rv_searchlens_logs` / `rv_searchlens_feedback`
+  - AJAX actions: `wp_ajax_aiss_*` → `wp_ajax_searchlens_*`
+  - REST namespace: `aiss/v1` → `searchlens/v1`
+  - Shortcode: `[aiss_trending]` → `[searchlens_trending]`
+  - Cron hook: `aiss_daily_log_purge` → `searchlens_daily_log_purge`
+  - Script/style handles: `aiss-*` → `searchlens-*`
+  - JS globals: `AISSearch` → `SearchLensAI`, `AISSAdmin` → `SearchLensAdmin`
+  - Widget class: `AISS_Trending_Widget` → `SearchLens_Trending_Widget`
+  - CSS classes: `.aiss-*` → `.searchlens-*`
+  - Asset filenames: `aiss.js`/`aiss.css`/`aiss-admin.css` → `searchlens.js`/`searchlens.css`/`searchlens-admin.css`
+- **Automatic data migration on upgrade** — Activating 1.0.6 renames the old database tables and migrates stored options/transients to the new prefix. No manual SQL needed.
+- **Moved inline `<script>` and `<style>` tags to enqueued files** — WordPress plugin review requires using `wp_enqueue_script`/`wp_enqueue_style` instead of inline HTML tags:
+  - Extracted admin settings JavaScript into `assets/searchlens-admin.js`
+  - Extracted trending widget Font Awesome detection into `assets/searchlens-trending.js`
+  - Replaced trending widget inline `<style>` with `wp_add_inline_style()`
 
 ---
 
