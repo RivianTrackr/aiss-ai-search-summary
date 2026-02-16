@@ -1644,47 +1644,6 @@ class SearchLens_AI {
                 <pre class="searchlens-modal-code"><code><?php echo esc_html( $this->get_default_css() ); ?></code></pre>
             </div>
         </div>
-        
-        <!-- JavaScript -->
-        <script>
-        (function($) {
-            $(document).ready(function() {
-                var modal = $('#searchlens-default-css-modal');
-                var textarea = $('#searchlens-custom-css');
-                
-                // Reset CSS
-                $('#searchlens-reset-css').on('click', function() {
-                    if (confirm('Reset custom CSS? This will clear all your custom styles.')) {
-                        textarea.val('');
-                    }
-                });
-                
-                // View default CSS
-                $('#searchlens-view-default-css').on('click', function() {
-                    modal.addClass('searchlens-modal-open');
-                });
-                
-                // Close modal - X button
-                $('#searchlens-close-modal').on('click', function() {
-                    modal.removeClass('searchlens-modal-open');
-                });
-                
-                // Close on background click
-                modal.on('click', function(e) {
-                    if (e.target === this) {
-                        modal.removeClass('searchlens-modal-open');
-                    }
-                });
-                
-                // Close on ESC key
-                $(document).on('keydown', function(e) {
-                    if (e.key === 'Escape' && modal.hasClass('searchlens-modal-open')) {
-                        modal.removeClass('searchlens-modal-open');
-                    }
-                });
-            });
-        })(jQuery);
-        </script>
         <?php
     }
 
@@ -2658,163 +2617,6 @@ class SearchLens_AI {
             </form>
         </div>
 
-        <script>
-        (function($) {
-            $(document).ready(function() {
-                // Advanced settings toggle
-                $('#searchlens-advanced-toggle').on('click', function() {
-                    var $settings = $('#searchlens-advanced-settings');
-                    var isHidden = $settings.is(':hidden');
-                    if (isHidden) {
-                        $settings.slideDown(200);
-                        $(this).text('Hide Advanced Settings');
-                    } else {
-                        $settings.slideUp(200);
-                        $(this).text('Show Advanced Settings');
-                    }
-                });
-
-                $('#searchlens-test-key-btn').on('click', function() {
-                    var btn = $(this);
-                    var useConstant = <?php echo $this->is_api_key_from_constant() ? 'true' : 'false'; ?>;
-                    var apiKey = useConstant ? '__USE_CONSTANT__' : $('#searchlens-api-key').val().trim();
-                    var resultDiv = $('#searchlens-test-result');
-
-                    if (!useConstant && !apiKey) {
-                        resultDiv.html('<div class="searchlens-test-result error"><p>Please enter an API key first.</p></div>');
-                        return;
-                    }
-
-                    btn.prop('disabled', true).text('Testing...');
-                    resultDiv.html('<div class="searchlens-test-result info"><p>Testing API key...</p></div>');
-
-                    $.ajax({
-                        url: ajaxurl,
-                        type: 'POST',
-                        data: {
-                            action: 'searchlens_test_api_key',
-                            api_key: apiKey,
-                            nonce: '<?php echo esc_attr( wp_create_nonce( 'searchlens_test_key' ) ); ?>'
-                        },
-                        success: function(response) {
-                            btn.prop('disabled', false).text('Test Connection');
-                            
-                            if (response.success) {
-                                var msg = '<strong>✓ ' + response.data.message + '</strong>';
-                                if (response.data.model_count) {
-                                    msg += '<br>Available models: ' + response.data.model_count + ' (Chat models: ' + response.data.chat_models + ')';
-                                }
-                                resultDiv.html('<div class="searchlens-test-result success"><p>' + msg + '</p></div>');
-                            } else {
-                                resultDiv.html('<div class="searchlens-test-result error"><p><strong>✗ Test failed:</strong> ' + response.data.message + '</p></div>');
-                            }
-                        },
-                        error: function() {
-                            btn.prop('disabled', false).text('Test Connection');
-                            resultDiv.html('<div class="searchlens-test-result error"><p>Request failed. Please try again.</p></div>');
-                        }
-                    });
-                });
-
-                // Refresh Models button
-                $('#searchlens-refresh-models-btn').on('click', function() {
-                    var btn = $(this);
-                    var resultSpan = $('#searchlens-refresh-models-result');
-                    var nonce = btn.data('nonce');
-
-                    btn.prop('disabled', true).text('Refreshing...');
-                    resultSpan.html('');
-
-                    $.ajax({
-                        url: ajaxurl,
-                        type: 'POST',
-                        data: {
-                            action: 'searchlens_refresh_models',
-                            nonce: nonce
-                        },
-                        success: function(response) {
-                            btn.prop('disabled', false).text('Refresh Models');
-                            if (response.success) {
-                                resultSpan.html('<span style="color: #fba919;">✓ ' + response.data.message + '</span>');
-                                // Reload page to show updated model list
-                                setTimeout(function() { location.reload(); }, 1000);
-                            } else {
-                                resultSpan.html('<span style="color: #ef4444;">✗ ' + response.data.message + '</span>');
-                            }
-                        },
-                        error: function() {
-                            btn.prop('disabled', false).text('Refresh Models');
-                            resultSpan.html('<span style="color: #ef4444;">✗ Request failed. Please try again.</span>');
-                        }
-                    });
-                });
-
-                // GDPR Purge button
-                $('#searchlens-gdpr-purge-btn').on('click', function() {
-                    if (!confirm('This will permanently replace all stored search query text with SHA-256 hashes. This cannot be undone. Continue?')) return;
-
-                    var btn = $(this);
-                    var resultSpan = $('#searchlens-gdpr-purge-result');
-                    btn.prop('disabled', true).text('Anonymizing...');
-                    resultSpan.html('');
-
-                    $.ajax({
-                        url: ajaxurl,
-                        type: 'POST',
-                        data: {
-                            action: 'searchlens_gdpr_purge_queries',
-                            nonce: '<?php echo esc_attr( wp_create_nonce( 'searchlens_gdpr_purge' ) ); ?>'
-                        },
-                        success: function(response) {
-                            btn.prop('disabled', false).text('Anonymize Existing Queries');
-                            if (response.success) {
-                                resultSpan.html('<span style="color: #10b981;">' + response.data.message + '</span>');
-                            } else {
-                                resultSpan.html('<span style="color: #ef4444;">' + response.data.message + '</span>');
-                            }
-                        },
-                        error: function() {
-                            btn.prop('disabled', false).text('Anonymize Existing Queries');
-                            resultSpan.html('<span style="color: #ef4444;">Request failed. Please try again.</span>');
-                        }
-                    });
-                });
-
-                // Clear Cache button
-                $('#searchlens-clear-cache-btn').on('click', function() {
-                    var btn = $(this);
-                    var resultSpan = $('#searchlens-clear-cache-result');
-                    var nonce = btn.data('nonce');
-
-                    btn.prop('disabled', true).text('Clearing...');
-                    resultSpan.html('');
-
-                    $.ajax({
-                        url: ajaxurl,
-                        type: 'POST',
-                        data: {
-                            action: 'searchlens_clear_cache',
-                            nonce: nonce
-                        },
-                        success: function(response) {
-                            btn.prop('disabled', false).text('Clear Cache Now');
-                            if (response.success) {
-                                resultSpan.html('<span style="color: #fba919;">✓ ' + response.data.message + '</span>');
-                            } else {
-                                resultSpan.html('<span style="color: #ef4444;">✗ ' + response.data.message + '</span>');
-                            }
-                        },
-                        error: function() {
-                            btn.prop('disabled', false).text('Clear Cache Now');
-                            resultSpan.html('<span style="color: #ef4444;">✗ Request failed. Please try again.</span>');
-                        }
-                    });
-                });
-
-            });
-        })(jQuery);
-        </script>
-
         <?php
     }
 
@@ -3692,106 +3494,6 @@ class SearchLens_AI {
             </div>
         </div>
 
-        <script>
-        (function($) {
-            $(document).ready(function() {
-                $('#searchlens-purge-spam-btn').on('click', function() {
-                    var btn = $(this);
-                    var resultSpan = $('#searchlens-purge-spam-result');
-                    var nonce = btn.data('nonce');
-
-                    if (!confirm('This will scan all log entries and permanently delete those matching spam patterns. Continue?')) {
-                        return;
-                    }
-
-                    btn.prop('disabled', true).text('Scanning...');
-                    resultSpan.html('');
-
-                    $.ajax({
-                        url: ajaxurl,
-                        type: 'POST',
-                        data: {
-                            action: 'searchlens_purge_spam',
-                            nonce: nonce
-                        },
-                        success: function(response) {
-                            btn.prop('disabled', false).text('Scan & Remove Spam');
-                            if (response.success) {
-                                var color = response.data.deleted > 0 ? '#10b981' : '#6e6e73';
-                                resultSpan.html('<span style="color: ' + color + ';">' + response.data.message + '</span>');
-                                if (response.data.deleted > 0) {
-                                    setTimeout(function() { location.reload(); }, 2000);
-                                }
-                            } else {
-                                resultSpan.html('<span style="color: #ef4444;">' + response.data.message + '</span>');
-                            }
-                        },
-                        error: function() {
-                            btn.prop('disabled', false).text('Scan & Remove Spam');
-                            resultSpan.html('<span style="color: #ef4444;">Request failed. Please try again.</span>');
-                        }
-                    });
-                });
-
-                // Bulk delete for event log rows
-                var $selectAll = $('#searchlens-select-all');
-                var $deleteBtn = $('#searchlens-bulk-delete-btn');
-                var $resultSpan = $('#searchlens-bulk-delete-result');
-
-                function updateDeleteBtn() {
-                    var checked = $('.searchlens-row-check:checked').length;
-                    $deleteBtn.toggle(checked > 0).text('Delete Selected (' + checked + ')');
-                }
-
-                $selectAll.on('change', function() {
-                    $('.searchlens-row-check').prop('checked', this.checked);
-                    updateDeleteBtn();
-                });
-
-                $(document).on('change', '.searchlens-row-check', function() {
-                    var total = $('.searchlens-row-check').length;
-                    var checked = $('.searchlens-row-check:checked').length;
-                    $selectAll.prop('checked', total === checked);
-                    updateDeleteBtn();
-                });
-
-                $deleteBtn.on('click', function() {
-                    var ids = $('.searchlens-row-check:checked').map(function() { return this.value; }).get();
-                    if (!ids.length) return;
-
-                    if (!confirm('Delete ' + ids.length + ' selected log entries? This cannot be undone.')) return;
-
-                    $deleteBtn.prop('disabled', true).text('Deleting...');
-                    $resultSpan.html('');
-
-                    $.ajax({
-                        url: ajaxurl,
-                        type: 'POST',
-                        data: {
-                            action: 'searchlens_bulk_delete_logs',
-                            nonce: (window.SearchLensAdmin && window.SearchLensAdmin.bulkDeleteNonce) || '',
-                            ids: ids.join(',')
-                        },
-                        success: function(response) {
-                            $deleteBtn.prop('disabled', false);
-                            if (response.success) {
-                                $resultSpan.html('<span style="color: #10b981;">' + response.data.message + '</span>');
-                                setTimeout(function() { location.reload(); }, 1500);
-                            } else {
-                                $resultSpan.html('<span style="color: #ef4444;">' + response.data.message + '</span>');
-                                updateDeleteBtn();
-                            }
-                        },
-                        error: function() {
-                            $deleteBtn.prop('disabled', false);
-                            $resultSpan.html('<span style="color: #ef4444;">Request failed. Please try again.</span>');
-                            updateDeleteBtn();
-                        }
-                    });
-                });
-            });
-        })(jQuery);
-        </script>
         <?php
     }
 
@@ -4211,13 +3913,23 @@ class SearchLens_AI {
             $version
         );
 
-        // Pass security nonces to admin JS via localized data instead of
-        // embedding them in HTML data-attributes.
+        wp_enqueue_script(
+            'searchlens-admin',
+            plugin_dir_url( __FILE__ ) . 'assets/searchlens-admin.js',
+            array( 'jquery' ),
+            $version,
+            true
+        );
+
+        // Pass security nonces and dynamic values to admin JS.
         wp_localize_script(
-            'jquery',
+            'searchlens-admin',
             'SearchLensAdmin',
             array(
-                'bulkDeleteNonce' => wp_create_nonce( 'searchlens_bulk_delete_logs' ),
+                'bulkDeleteNonce'    => wp_create_nonce( 'searchlens_bulk_delete_logs' ),
+                'testKeyNonce'       => wp_create_nonce( 'searchlens_test_key' ),
+                'gdprPurgeNonce'     => wp_create_nonce( 'searchlens_gdpr_purge' ),
+                'useApiKeyConstant'  => $this->is_api_key_from_constant(),
             )
         );
     }
@@ -5909,85 +5621,32 @@ class SearchLens_AI {
 
         $html .= '</ul></div>';
 
-        // Add responsive styles and Font Awesome detection
-        $html .= '<style>
-            .searchlens-trending-widget {
-                max-width: 100%;
-            }
-            .searchlens-trending-link:hover {
-                background: rgba(0, 0, 0, 0.15) !important;
-            }
+        // Enqueue responsive styles via wp_add_inline_style
+        $trending_css = '.searchlens-trending-widget { max-width: 100%; }
+            .searchlens-trending-link:hover { background: rgba(0, 0, 0, 0.15) !important; }
             @media (max-width: 480px) {
-                .searchlens-trending-widget {
-                    padding: 20px !important;
-                    border-radius: 16px !important;
-                }
-                .searchlens-trending-header {
-                    gap: 12px !important;
-                    margin-bottom: 16px !important;
-                }
-                .searchlens-trending-icon {
-                    width: 40px !important;
-                }
-                .searchlens-trending-icon svg {
-                    width: 28px !important;
-                    height: 28px !important;
-                }
-                .searchlens-trending-icon .searchlens-trending-fa-icon {
-                    font-size: 28px !important;
-                    width: 40px !important;
-                }
-                .searchlens-trending-title {
-                    font-size: 18px !important;
-                }
-                .searchlens-trending-subtitle {
-                    font-size: 13px !important;
-                }
-                .searchlens-trending-link {
-                    padding: 8px 12px !important;
-                    gap: 10px !important;
-                }
-                .searchlens-trending-query {
-                    font-size: 14px !important;
-                }
-            }
-        </style>
-        <script>
-        (function() {
-            function checkFontAwesome() {
-                var faIcons = document.querySelectorAll(".searchlens-trending-fa-icon");
-                var svgIcons = document.querySelectorAll(".searchlens-trending-svg-icon");
-                var hasFontAwesome = false;
+                .searchlens-trending-widget { padding: 20px !important; border-radius: 16px !important; }
+                .searchlens-trending-header { gap: 12px !important; margin-bottom: 16px !important; }
+                .searchlens-trending-icon { width: 40px !important; }
+                .searchlens-trending-icon svg { width: 28px !important; height: 28px !important; }
+                .searchlens-trending-icon .searchlens-trending-fa-icon { font-size: 28px !important; width: 40px !important; }
+                .searchlens-trending-title { font-size: 18px !important; }
+                .searchlens-trending-subtitle { font-size: 13px !important; }
+                .searchlens-trending-link { padding: 8px 12px !important; gap: 10px !important; }
+                .searchlens-trending-query { font-size: 14px !important; }
+            }';
+        wp_register_style( 'searchlens-trending', false, array(), SEARCHLENS_VERSION );
+        wp_enqueue_style( 'searchlens-trending' );
+        wp_add_inline_style( 'searchlens-trending', $trending_css );
 
-                // Check if Font Awesome is loaded by testing computed styles
-                var testIcon = document.createElement("i");
-                testIcon.className = "fa-solid fa-magnifying-glass";
-                testIcon.style.position = "absolute";
-                testIcon.style.left = "-9999px";
-                document.body.appendChild(testIcon);
-
-                var computedFont = window.getComputedStyle(testIcon).fontFamily;
-                if (computedFont.toLowerCase().indexOf("font awesome") !== -1 ||
-                    computedFont.toLowerCase().indexOf("fontawesome") !== -1) {
-                    hasFontAwesome = true;
-                }
-                document.body.removeChild(testIcon);
-
-                if (hasFontAwesome) {
-                    faIcons.forEach(function(icon) { icon.style.display = "inline-block"; });
-                    svgIcons.forEach(function(icon) { icon.style.display = "none"; });
-                }
-            }
-
-            if (document.readyState === "loading") {
-                document.addEventListener("DOMContentLoaded", checkFontAwesome);
-            } else {
-                checkFontAwesome();
-            }
-            // Also check after a short delay for async-loaded Font Awesome
-            setTimeout(checkFontAwesome, 500);
-        })();
-        </script>';
+        // Enqueue Font Awesome detection script
+        wp_enqueue_script(
+            'searchlens-trending',
+            plugin_dir_url( __FILE__ ) . 'assets/searchlens-trending.js',
+            array(),
+            SEARCHLENS_VERSION,
+            true
+        );
 
         return $html;
     }
@@ -6110,17 +5769,13 @@ class SearchLens_Trending_Widget extends WP_Widget {
                    name="<?php echo esc_attr( $this->get_field_name( 'bg_color' ) ); ?>"
                    type="color"
                    value="<?php echo esc_attr( $bg_color ); ?>"
-                   style="width: 50px; height: 30px; padding: 0; border: 1px solid #ccc; cursor: pointer;">
+                   style="width: 50px; height: 30px; padding: 0; border: 1px solid #ccc; cursor: pointer;"
+                   oninput="document.getElementById('<?php echo esc_attr( $this->get_field_id( 'bg_color_text' ) ); ?>').value = this.value;">
             <input type="text"
                    id="<?php echo esc_attr( $this->get_field_id( 'bg_color_text' ) ); ?>"
                    value="<?php echo esc_attr( $bg_color ); ?>"
                    style="width: 80px; margin-left: 8px;"
                    onchange="document.getElementById('<?php echo esc_attr( $this->get_field_id( 'bg_color' ) ); ?>').value = this.value;">
-            <script>
-            document.getElementById('<?php echo esc_attr( $this->get_field_id( 'bg_color' ) ); ?>').addEventListener('input', function() {
-                document.getElementById('<?php echo esc_attr( $this->get_field_id( 'bg_color_text' ) ); ?>').value = this.value;
-            });
-            </script>
         </p>
         <p>
             <label for="<?php echo esc_attr( $this->get_field_id( 'font_color' ) ); ?>">Font Color:</label><br>
@@ -6128,17 +5783,13 @@ class SearchLens_Trending_Widget extends WP_Widget {
                    name="<?php echo esc_attr( $this->get_field_name( 'font_color' ) ); ?>"
                    type="color"
                    value="<?php echo esc_attr( $font_color ); ?>"
-                   style="width: 50px; height: 30px; padding: 0; border: 1px solid #ccc; cursor: pointer;">
+                   style="width: 50px; height: 30px; padding: 0; border: 1px solid #ccc; cursor: pointer;"
+                   oninput="document.getElementById('<?php echo esc_attr( $this->get_field_id( 'font_color_text' ) ); ?>').value = this.value;">
             <input type="text"
                    id="<?php echo esc_attr( $this->get_field_id( 'font_color_text' ) ); ?>"
                    value="<?php echo esc_attr( $font_color ); ?>"
                    style="width: 80px; margin-left: 8px;"
                    onchange="document.getElementById('<?php echo esc_attr( $this->get_field_id( 'font_color' ) ); ?>').value = this.value;">
-            <script>
-            document.getElementById('<?php echo esc_attr( $this->get_field_id( 'font_color' ) ); ?>').addEventListener('input', function() {
-                document.getElementById('<?php echo esc_attr( $this->get_field_id( 'font_color_text' ) ); ?>').value = this.value;
-            });
-            </script>
         </p>
         <p class="description">
             Shortcode: <code>[searchlens_trending limit="5" time_period="24" time_unit="hours"]</code>
