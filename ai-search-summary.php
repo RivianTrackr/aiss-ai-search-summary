@@ -592,9 +592,9 @@ class AI_Search_Summary {
             'request_timeout'      => 60,
             'site_name'            => get_bloginfo( 'name' ),
             'site_description'     => '',
-            'show_openai_badge'    => 1,
-            'show_sources'         => 1,
-            'show_feedback'        => 1,
+            'show_openai_badge'    => 0,
+            'show_sources'         => 0,
+            'show_feedback'        => 0,
             'color_background'     => '#121e2b',
             'color_text'           => '#e5e7eb',
             'color_accent'         => '#fba919',
@@ -791,7 +791,7 @@ class AI_Search_Summary {
 
         // Auto-clear cache when model, token limit, or display settings change
         $old_model       = isset( $old_options['model'] ) ? $old_options['model'] : '';
-        $old_show_sources = isset( $old_options['show_sources'] ) ? $old_options['show_sources'] : 1;
+        $old_show_sources = isset( $old_options['show_sources'] ) ? $old_options['show_sources'] : 0;
         $old_max_tokens  = isset( $old_options['max_tokens'] ) ? (int) $old_options['max_tokens'] : AISS_MAX_TOKENS;
 
         $cache_invalidating_change = false;
@@ -2187,7 +2187,7 @@ class AI_Search_Summary {
                                     <input type="checkbox"
                                            name="<?php echo esc_attr( $this->option_name ); ?>[show_openai_badge]"
                                            value="1"
-                                           <?php checked( isset( $options['show_openai_badge'] ) ? $options['show_openai_badge'] : 1, 1 ); ?> />
+                                           <?php checked( isset( $options['show_openai_badge'] ) ? $options['show_openai_badge'] : 0, 1 ); ?> />
                                     <span class="aiss-toggle-slider"></span>
                                 </label>
                                 <span class="aiss-toggle-label">
@@ -2209,7 +2209,7 @@ class AI_Search_Summary {
                                     <input type="checkbox"
                                            name="<?php echo esc_attr( $this->option_name ); ?>[show_sources]"
                                            value="1"
-                                           <?php checked( isset( $options['show_sources'] ) ? $options['show_sources'] : 1, 1 ); ?> />
+                                           <?php checked( isset( $options['show_sources'] ) ? $options['show_sources'] : 0, 1 ); ?> />
                                     <span class="aiss-toggle-slider"></span>
                                 </label>
                                 <span class="aiss-toggle-label">
@@ -2249,7 +2249,7 @@ class AI_Search_Summary {
                                     <input type="checkbox"
                                            name="<?php echo esc_attr( $this->option_name ); ?>[show_feedback]"
                                            value="1"
-                                           <?php checked( isset( $options['show_feedback'] ) ? $options['show_feedback'] : 1, 1 ); ?> />
+                                           <?php checked( isset( $options['show_feedback'] ) ? $options['show_feedback'] : 0, 1 ); ?> />
                                     <span class="aiss-toggle-slider"></span>
                                 </label>
                                 <span class="aiss-toggle-label">
@@ -4134,8 +4134,8 @@ class AI_Search_Summary {
 
         $search_query = get_search_query();
         $site_name = ! empty( $options['site_name'] ) ? $options['site_name'] : get_bloginfo( 'name' );
-        $show_badge = isset( $options['show_openai_badge'] ) ? $options['show_openai_badge'] : 1;
-        $show_feedback = isset( $options['show_feedback'] ) ? $options['show_feedback'] : 1;
+        $show_badge = isset( $options['show_openai_badge'] ) ? $options['show_openai_badge'] : 0;
+        $show_feedback = isset( $options['show_feedback'] ) ? $options['show_feedback'] : 0;
         ?>
         <div class="aiss-summary" style="margin-bottom: 1.5rem;">
             <div class="aiss-summary-inner" style="padding: 1.25rem 1.25rem; border-radius: 10px; border-width: 1px; border-style: solid; display:flex; flex-direction:column; gap:0.6rem;">
@@ -5157,7 +5157,7 @@ class AI_Search_Summary {
         $answer_html = wp_kses( $answer_html, $allowed_tags );
 
         // Add sources if enabled in settings
-        $show_sources = isset( $options['show_sources'] ) ? $options['show_sources'] : 1;
+        $show_sources = isset( $options['show_sources'] ) ? $options['show_sources'] : 0;
         if ( $show_sources && ! empty( $sources ) ) {
             $answer_html .= $this->render_sources_html( $sources );
         }
