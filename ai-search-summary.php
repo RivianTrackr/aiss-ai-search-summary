@@ -1349,6 +1349,7 @@ class AI_Search_Summary {
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $deleted = $wpdb->query(
             $wpdb->prepare(
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- $placeholders is a safe list of %d tokens
                 "DELETE FROM %i WHERE id IN ($placeholders)",
                 $table_name,
                 ...$ids
@@ -2952,12 +2953,13 @@ class AI_Search_Summary {
 
         // Preserve other pagination params when navigating
         $preserve_params = array( 'queries_page', 'errors_page', 'events_page' );
+        // phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only pagination params on admin page
         foreach ( $preserve_params as $param ) {
             if ( $param !== $param_name && isset( $_GET[ $param ] ) ) {
-                // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only pagination params
                 $base_url = add_query_arg( $param, absint( wp_unslash( $_GET[ $param ] ) ), $base_url );
             }
         }
+        // phpcs:enable WordPress.Security.NonceVerification.Recommended
         ?>
         <div class="aiss-pagination" style="margin: 20px; padding-top: 16px; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;">
             <div class="aiss-pagination-info" style="font-size: 13px; color: #6e6e73;">
