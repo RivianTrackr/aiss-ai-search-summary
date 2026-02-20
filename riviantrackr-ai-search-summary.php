@@ -999,8 +999,8 @@ class RivianTrackr_AI_Search_Summary {
         $parent_slug = 'riviantrackr-settings';
 
         add_menu_page(
-            'AI Search Summary',
-            'AI Search Summary',
+            'AI Search',
+            'AI Search',
             $capability,
             $parent_slug,
             array( $this, 'render_settings_page' ),
@@ -1010,7 +1010,7 @@ class RivianTrackr_AI_Search_Summary {
 
         add_submenu_page(
             $parent_slug,
-            'AI Search Summary Settings',
+            'AI Search Settings',
             'Settings',
             $capability,
             $parent_slug,
@@ -1019,7 +1019,7 @@ class RivianTrackr_AI_Search_Summary {
 
         add_submenu_page(
             $parent_slug,
-            'AI Search Summary Analytics',
+            'AI Search Analytics',
             'Analytics',
             $capability,
             'riviantrackr-analytics',

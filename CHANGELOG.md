@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **Plugin renamed to "AI Search Summary"** — Simplified the display name from "RivianTrackr AI Search Summary" to "AI Search Summary" in the plugin header, admin sidebar menu, and submenu page titles for a cleaner look.
+- **Plugin sidebar renamed to "AI Search"** — Simplified the admin sidebar menu label and submenu page titles from "RivianTrackr AI Search Summary" to "AI Search" for a cleaner look. Plugin header updated to "AI Search Summary".
 
 ### Removed
 
