@@ -5,6 +5,25 @@ All notable changes to RivianTrackr AI Search Summary will be documented in this
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-02-20
+
+### Improved
+
+- **Enhanced spam and nonsense detection** — Significantly expanded `is_spam_query()` with 7 new detection layers to catch more junk queries before they reach the AI or pollute analytics.
+
+### Added
+
+- **Keyboard walk detection** — Blocks queries containing keyboard patterns like `qwerty`, `asdfg`, `zxcvb`, sequential numbers, and alphabetical runs.
+- **Gibberish/consonant cluster detection** — Catches meaningless strings by flagging words with 6+ consecutive consonants and no vowels.
+- **Single long word detection** — Blocks queries longer than 20 characters with no spaces (random strings, encoded data, base64 blobs).
+- **Mixed script detection** — Identifies homoglyph attacks by catching queries that mix Cyrillic and Latin characters.
+- **Path traversal and file probe blocking** — Blocks queries containing `../`, `/etc/`, `.php`, `.env`, and other file system probes.
+- **HTML/script injection blocking** — Catches `<script>`, `<iframe>`, `javascript:` and similar injection payloads.
+- **Entropy-based gibberish scoring** — Analyzes character distribution entropy for queries 8+ characters; high-entropy strings with fewer than 3 common English bigrams are flagged as gibberish.
+- **40+ additional spam keywords** — Expanded keyword list covers adult content, pharma spam, scam/phishing phrases, hacking terms, counterfeiting, and financial fraud patterns.
+
+---
+
 ## [1.1.0.1] - 2026-02-20
 
 ### Added

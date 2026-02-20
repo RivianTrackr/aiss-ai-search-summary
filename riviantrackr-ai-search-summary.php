@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Plugin Name: AI Search Summary
  * Description: Add AI-powered summaries to WordPress search results using OpenAI or Anthropic Claude. Non-blocking, with analytics, cache control, and collapsible sources.
- * Version: 1.1.0.1
+ * Version: 1.1.1
  * Author: Jose Castillo
  * Author URI: https://github.com/RivianTrackr/
  * License: GPL v2 or later
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Domain Path: /languages
  */
 
-define( 'RIVIANTRACKR_VERSION', '1.1.0.1' );
+define( 'RIVIANTRACKR_VERSION', '1.1.1' );
 define( 'RIVIANTRACKR_MODELS_CACHE_TTL', 7 * DAY_IN_SECONDS );
 define( 'RIVIANTRACKR_MIN_CACHE_TTL', 60 );
 define( 'RIVIANTRACKR_MAX_CACHE_TTL', 86400 );
@@ -4850,7 +4850,36 @@ class RivianTrackr_AI_Search_Summary {
             return true;
         }
 
-        // 5. Common spam keywords/phrases
+        // 5. Keyboard walk patterns (qwerty, asdf, etc.)
+        $keyboard_walks = array(
+            'qwert', 'werty', 'ertyu', 'rtyui', 'tyuio', 'yuiop',
+            'asdfg', 'sdfgh', 'dfghj', 'fghjk', 'ghjkl',
+            'zxcvb', 'xcvbn', 'cvbnm',
+            'qazwsx', 'wsxedc', 'edcrfv',
+            '12345', '23456', '34567', '45678', '56789', '67890',
+            'abcde', 'bcdef', 'cdefg', 'defgh', 'efghi',
+        );
+        foreach ( $keyboard_walks as $walk ) {
+            if ( strpos( $normalized, $walk ) !== false ) {
+                return true;
+            }
+        }
+
+        // 6. Gibberish detection: long words with no vowels (consonant clusters)
+        $words = preg_split( '/\s+/', $normalized );
+        foreach ( $words as $word ) {
+            $word_clean = preg_replace( '/[^a-z]/', '', $word );
+            if ( strlen( $word_clean ) >= 6 && ! preg_match( '/[aeiouy]/', $word_clean ) ) {
+                return true;
+            }
+        }
+
+        // 7. Single long word without spaces (likely gibberish or encoded data)
+        if ( strlen( $normalized ) > 20 && ! preg_match( '/\s/', $normalized ) && preg_match( '/^[a-z0-9]+$/', $normalized ) ) {
+            return true;
+        }
+
+        // 8. Common spam keywords/phrases
         $spam_patterns = array(
             'buy cheap',
             'order now',
@@ -4880,6 +4909,47 @@ class RivianTrackr_AI_Search_Summary {
             'telegram',
             'whatsapp.*group',
             'join.*channel',
+            'porn',
+            'xxx',
+            'sex\s',
+            'nude',
+            'naked',
+            'escort\s',
+            'onlyfans',
+            'hack\s',
+            'crack\s',
+            'keygen',
+            'torrent',
+            'warez',
+            'phishing',
+            'ransomware',
+            'spy\s?ware',
+            'mal\s?ware',
+            'trojan',
+            'botnet',
+            'ddos',
+            'carding',
+            'fullz',
+            'darknet',
+            'dark\s?web',
+            'drug\s',
+            'pharma\s?online',
+            'prescription\s+without',
+            'cheap\s+meds',
+            'replica\s+watch',
+            'fake\s+id',
+            'counterfeit',
+            'money\s?launder',
+            'pyramid\s?scheme',
+            'mlm\s',
+            'lottery\s+winner',
+            'you\s+have\s+won',
+            'claim\s+your\s+prize',
+            'congratulations.*winner',
+            'urgent.*transfer',
+            'wire\s+transfer',
+            'western\s+union',
+            'moneygram',
         );
 
         foreach ( $spam_patterns as $pattern ) {
@@ -4892,7 +4962,7 @@ class RivianTrackr_AI_Search_Summary {
             }
         }
 
-        // 6. Server variable / vulnerability scanner probes
+        // 9. Server variable / vulnerability scanner probes
         // Bots send CGI environment variable names to test if the site echoes them back.
         $scanner_probes = array(
             'QUERY_STRING',
@@ -4930,14 +5000,59 @@ class RivianTrackr_AI_Search_Summary {
             }
         }
 
-        // 7. High ratio of non-alphanumeric characters (gibberish)
+        // 10. High ratio of non-alphanumeric characters (gibberish)
         $alpha_count = preg_match_all( '/[a-z0-9]/i', $value );
         $total_len   = max( 1, strlen( $value ) );
         if ( $total_len > 10 && ( $alpha_count / $total_len ) < 0.5 ) {
             return true;
         }
 
-        // 8. Admin-configurable blocklist
+        // 11. Mixed script detection (e.g., Cyrillic mixed with Latin — homoglyph attacks)
+        $has_latin    = preg_match( '/[a-z]/i', $normalized );
+        $has_cyrillic = preg_match( '/[\x{0400}-\x{04FF}]/u', $value );
+        if ( $has_latin && $has_cyrillic ) {
+            return true;
+        }
+
+        // 12. Path traversal / file system probes
+        if ( preg_match( '#\.\./|\.\.\\\\|/etc/|/proc/|/var/|wp-config|\.php|\.asp|\.jsp|\.env#i', $normalized ) ) {
+            return true;
+        }
+
+        // 13. HTML/script injection attempts
+        if ( preg_match( '/<\s*script|<\s*iframe|<\s*object|<\s*embed|javascript\s*:/i', $normalized ) ) {
+            return true;
+        }
+
+        // 14. Entropy-based gibberish detection for queries > 8 chars
+        // Real search queries have natural character frequency distribution;
+        // random/gibberish strings have high entropy (more uniform distribution).
+        $alpha_only = preg_replace( '/[^a-z]/', '', $normalized );
+        if ( strlen( $alpha_only ) >= 8 ) {
+            $freq  = array_count_values( str_split( $alpha_only ) );
+            $len_f = strlen( $alpha_only );
+            $entropy = 0.0;
+            foreach ( $freq as $count ) {
+                $p = $count / $len_f;
+                $entropy -= $p * log( $p, 2 );
+            }
+            // High entropy (> 3.5 bits/char) with no common English bigrams = gibberish
+            if ( $entropy > 3.5 ) {
+                $common_bigrams = array( 'th', 'he', 'in', 'er', 'an', 'on', 'en', 'at', 'es', 'ed', 'or', 'ti', 'is', 'it', 'al', 'ar', 'st', 'to', 'nt', 'ng', 'se', 'ha', 'ou', 'io', 're', 'le', 'nd', 'hi', 'te', 'me' );
+                $bigram_hits = 0;
+                foreach ( $common_bigrams as $bg ) {
+                    if ( strpos( $alpha_only, $bg ) !== false ) {
+                        ++$bigram_hits;
+                    }
+                }
+                // Real English text typically hits 5+ common bigrams; gibberish hits few
+                if ( $bigram_hits < 3 ) {
+                    return true;
+                }
+            }
+        }
+
+        // 15. Admin-configurable blocklist
         $options   = $this->get_options();
         $blocklist = isset( $options['spam_blocklist'] ) ? $options['spam_blocklist'] : '';
         if ( ! empty( $blocklist ) ) {

@@ -4,7 +4,7 @@ Tags: search, ai, openai, anthropic, claude, summary, chatgpt
 Requires at least: 6.9
 Tested up to: 6.9
 Requires PHP: 8.4
-Stable tag: 1.1.0.1
+Stable tag: 1.1.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -175,6 +175,17 @@ The plugin is designed with privacy in mind:
 
 == Changelog ==
 
+= 1.1.1 =
+* Improved: Significantly enhanced spam and nonsense query detection
+* Added: Keyboard walk pattern detection (qwerty, asdf, etc.)
+* Added: Gibberish/consonant cluster detection for meaningless strings
+* Added: Single long word without spaces detection (encoded data, random strings)
+* Added: Mixed script detection (Cyrillic + Latin homoglyph attacks)
+* Added: Path traversal and file system probe blocking
+* Added: HTML/script injection attempt blocking
+* Added: Entropy-based gibberish scoring with English bigram validation
+* Added: 40+ additional spam keyword patterns (adult, pharma, scam, hacking)
+
 = 1.1.0.1 =
 * Added: Model column in Recent Events analytics table — see which AI model was used for each search
 * Added: ai_model column in logs database table (auto-migrated on upgrade)
@@ -286,6 +297,9 @@ The plugin is designed with privacy in mind:
 * Security headers and prepared statements
 
 == Upgrade Notice ==
+
+= 1.1.1 =
+Major spam detection upgrade: blocks keyboard walks, gibberish strings, mixed-script homoglyph attacks, path traversal probes, script injection, and 40+ additional spam patterns. Existing spam purge button will retroactively clean entries matching new rules.
 
 = 1.1.0.1 =
 Analytics now shows which AI model was used for each search event, making it easy to compare response times across models.
