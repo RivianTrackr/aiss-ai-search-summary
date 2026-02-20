@@ -67,12 +67,16 @@
   function logSessionCacheHit(query, resultsCount) {
     // Fire and forget - log session cache hit to analytics
     if (!window.RivianTrackrAI || !window.RivianTrackrAI.endpoint) return;
-    var logEndpoint = window.RivianTrackrAI.endpoint.replace('/summary', '/log-session-hit');
+    var logEndpoint = window.RivianTrackrAI.logEndpoint || window.RivianTrackrAI.endpoint.replace('/summary', '/log-session-hit');
+    var logHeaders = { 'Content-Type': 'application/x-www-form-urlencoded' };
+    if (window.RivianTrackrAI.nonce) {
+      logHeaders['X-WP-Nonce'] = window.RivianTrackrAI.nonce;
+    }
     try {
       fetch(logEndpoint, {
         method: 'POST',
         credentials: 'same-origin',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        headers: logHeaders,
         body: 'q=' + encodeURIComponent(query) + '&results_count=' + (resultsCount || 0)
       });
     } catch (e) {
@@ -175,7 +179,12 @@
       }, msg.delay);
     });
 
-    fetch(endpoint, { credentials: 'same-origin', signal: abortController.signal })
+    var fetchHeaders = {};
+    if (window.RivianTrackrAI.nonce) {
+      fetchHeaders['X-WP-Nonce'] = window.RivianTrackrAI.nonce;
+    }
+
+    fetch(endpoint, { credentials: 'same-origin', signal: abortController.signal, headers: fetchHeaders })
       .then(function(response) {
         progressTimers.forEach(clearTimeout);
         clearTimeout(timeoutId);

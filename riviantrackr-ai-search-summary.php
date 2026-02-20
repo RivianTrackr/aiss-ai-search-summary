@@ -66,10 +66,6 @@ define( 'RIVIANTRACKR_ERROR_API_ERROR', 'api_error' );
 define( 'RIVIANTRACKR_ERROR_NO_RESULTS', 'no_results' );
 
 
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
-
 class RivianTrackr_AI_Search_Summary {
 
     private $option_name         = 'riviantrackr_options';
@@ -899,8 +895,10 @@ class RivianTrackr_AI_Search_Summary {
                 if ( preg_match( '/^https?:/i', $url ) || ! preg_match( '/^[a-z]+:/i', $url ) ) {
                     return $matches[0];
                 }
-                // Strictly allow only known-safe image data URIs
-                if ( preg_match( '/^data:image\/(png|jpe?g|gif|webp|svg\+xml)(;base64)?,/i', $url ) ) {
+                // Strictly allow only known-safe raster image data URIs
+                // Note: SVG is intentionally excluded because SVG can contain
+                // embedded <script> tags and event handlers (XSS vector).
+                if ( preg_match( '/^data:image\/(png|jpe?g|gif|webp)(;base64)?,/i', $url ) ) {
                     return $matches[0];
                 }
                 return ''; // Remove dangerous URLs
@@ -1037,7 +1035,7 @@ class RivianTrackr_AI_Search_Summary {
      * @param string $hex Hex color code.
      * @return array|false RGB array or false on failure.
      */
-    private function hex_to_rgb( string $hex ): array {
+    private function hex_to_rgb( string $hex ) {
         $hex = ltrim( $hex, '#' );
 
         if ( strlen( $hex ) === 3 ) {
@@ -1714,7 +1712,12 @@ class RivianTrackr_AI_Search_Summary {
     private function array_to_csv_line( $fields ) {
         $escaped = array();
         foreach ( $fields as $field ) {
-            $field     = (string) $field;
+            $field = (string) $field;
+            // Prevent CSV formula injection: prefix formula-triggering characters
+            // with a tab so spreadsheet apps don't execute them.
+            if ( preg_match( '/^[=+\-@\t\r]/', $field ) ) {
+                $field = "\t" . $field;
+            }
             $escaped[] = '"' . str_replace( '"', '""', $field ) . '"';
         }
         return implode( ',', $escaped ) . "\n";
@@ -1919,7 +1922,7 @@ class RivianTrackr_AI_Search_Summary {
             return array();
         }
 
-        $response = wp_remote_get(
+        $response = wp_safe_remote_get(
             'https://api.openai.com/v1/models',
             array(
                 'headers' => array(
@@ -5929,7 +5932,7 @@ class RivianTrackr_AI_Search_Summary {
             $html .= '<li>';
 
             if ( $url ) {
-                $html .= '<a href="' . esc_url( $url ) . '">';
+                $html .= '<a href="' . esc_url( $url ) . '" rel="noopener noreferrer">';
                 $html .= $title ? esc_html( $title ) : esc_html( $url );
                 $html .= '</a>';
             } else {
