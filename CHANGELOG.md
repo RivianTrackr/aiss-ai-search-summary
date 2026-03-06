@@ -5,6 +5,25 @@ All notable changes to RivianTrackr AI Search Summary will be documented in this
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2026-03-06
+
+### Added
+
+- **RivianTrackr Design System** — Introduced CSS custom properties (`--rtg-*`) across both frontend and admin stylesheets, creating a centralized, token-based design system sourced from the RivianTrackr branding guide.
+- **Dark theme tokens (frontend)** — `riviantrackr.css` now defines `:root` variables for accent (`#fba919`), backgrounds (`#121e2b`, `#0f1a26`), text (`#e5e7eb`), border (`#374151`), star rating colors, border radii, and font stacks. All component styles reference these tokens.
+- **Light theme tokens (admin)** — `riviantrackr-admin.css` now defines `:root` variables for action colors (`#0071e3`), success/error/warning/info states, text hierarchy, backgrounds, border radii, shadows, and font stacks. All admin component styles reference these tokens.
+- **Brand gradient on provider badge** — The AI provider badge mark now uses the full RivianTrackr signature gradient (12-color sweep) instead of the previous green-to-blue gradient.
+- **`prefers-reduced-motion` support** — Both frontend and admin stylesheets now disable all transitions and animations when the user has reduced motion enabled, improving accessibility.
+
+### Changed
+
+- **Accent color updated** — Frontend accent changed from green (`#22c55e`) to brand gold (`#fba919`) for spinner, source links, hover states, and focus rings.
+- **Default border color updated** — Changed from `#94a3b8` to `#374151` across PHP defaults, admin form placeholders, and generated CSS to match the dark theme design system.
+- **Widget border-radius** — Updated from `10px` to `12px` to match `--rtg-radius-card` token.
+- **Plugin author** — Updated to "RivianTrackr".
+
+---
+
 ## [1.3.5] - 2026-03-01
 
 ### Added
