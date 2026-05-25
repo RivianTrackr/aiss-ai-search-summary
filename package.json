@@ -1,4 +1,6 @@
 {
+  "name": "riviantrackr-ai-search-summary",
+  "private": true,
   "devDependencies": {
     "clean-css-cli": "^5.6.3",
     "terser": "^5.46.1"
