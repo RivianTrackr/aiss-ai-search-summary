@@ -1,6 +1,6 @@
 # Plugin Enhancement Roadmap
 
-Comprehensive review of the **AI Search Summary** plugin (v1.4.1).
+Comprehensive review of the **AI Search Summary** plugin (last reviewed at v1.4.3, 2026-05-25).
 Organized by category and priority so items can be tackled incrementally.
 
 ---
@@ -175,8 +175,9 @@ Organized by category and priority so items can be tackled incrementally.
 
 ### Medium Priority
 
-- [ ] **6.1 ARIA Attributes & Keyboard Navigation**
-  Add `role="region"`, `aria-live="polite"` for dynamic summary loading, `aria-label` on feedback buttons, keyboard focus management.
+- [ ] **6.1 ARIA Attributes & Keyboard Navigation** _(partially shipped)_
+  Already in place: `aria-live="polite"` on status region, `aria-expanded` on sources toggle, `aria-hidden` on skeleton, `aria-label` on modal close and provider badge, `role="alert"` on error states.
+  Still TODO: `role="region"` wrapping the summary container, dedicated `aria-label` on thumbs-up/down feedback buttons, comprehensive keyboard focus management.
   _Files:_ `assets/riviantrackr.js`, placeholder HTML in main plugin file
 
 ### Low Priority
@@ -185,9 +186,8 @@ Organized by category and priority so items can be tackled incrementally.
   Add `prefers-color-scheme` media query support with separate dark mode color palette.
   _Files:_ `assets/riviantrackr.css`, settings page
 
-- [ ] **6.3 Loading Skeleton Animation**
-  Replace basic loading indicator with content skeleton (shimmer effect) for better perceived performance.
-  _Files:_ `assets/riviantrackr.css`, `assets/riviantrackr.js`
+- [x] **6.3 Loading Skeleton Animation** _(shipped)_
+  Skeleton placeholder with shimmer animation is rendered while the AI response loads. See `.riviantrackr-skeleton` and `.riviantrackr-skeleton-line` rules in `assets/riviantrackr.css` and the skeleton injection in `assets/riviantrackr.js`.
 
 ---
 
@@ -217,6 +217,6 @@ Organized by category and priority so items can be tackled incrementally.
 
 | Priority | Count | Items |
 |----------|-------|-------|
-| **High** | 6 | 1.1, 1.2, 1.3, 2.1, 4.1, 4.2, 7.1 |
-| **Medium** | 14 | 1.4, 1.5, 1.6, 2.2, 2.3, 2.4, 3.1-3.4, 4.3, 4.4, 5.1, 5.2, 6.1, 7.2 |
-| **Low** | 12 | 1.7, 2.5, 3.5-3.8, 4.5, 4.6, 5.3, 5.4, 6.2, 6.3, 7.3 |
+| **High** | 7 | 1.1, 1.2, 1.3, 2.1, 4.1, 4.2, 7.1 |
+| **Medium** | 16 | 1.4, 1.5, 1.6, 2.2, 2.3, 2.4, 3.1-3.4, 4.3, 4.4, 5.1, 5.2, 6.1, 7.2 |
+| **Low** | 12 | 1.7, 2.5, 3.5-3.8, 4.5, 4.6, 5.3, 5.4, 6.2, 7.3 _(6.3 shipped)_ |
