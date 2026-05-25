@@ -150,7 +150,7 @@ When we receive a security bug report, we will:
 
 ## Security Updates
 
-Security updates will be released as patch versions (e.g., 3.3.1) and will be clearly marked in the changelog with a `[SECURITY]` tag.
+Security updates will be released as patch versions (e.g., 1.4.3) and will be clearly marked in the changelog with a `[SECURITY]` tag.
 
 ## Questions?
 
