@@ -5,6 +5,14 @@ All notable changes to RivianTrackr AI Search Summary will be documented in this
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.3] - 2026-05-25
+
+### Changed
+
+- **WordPress 7.0 compatibility** — Tested and confirmed compatible with WordPress 7.0. Bumped `Tested up to` header to 7.0. No code changes required; the plugin uses no APIs affected by 7.0's dev notes (no block registration, no `the_author_posts_link` / `get_the_author_link` calls, no Abilities or Sync providers).
+
+---
+
 ## [1.4.2] - 2026-05-14
 
 ### Added
